@@ -1,4 +1,4 @@
-import { ProductListPage } from "./pages/product-list"
+import { ProductListPage } from "./pages/product-list.page.tsx"
 
 function App() {
 

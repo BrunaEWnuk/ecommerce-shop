@@ -1,6 +1,10 @@
-import type { BrandDTO } from "@/cases/brands/dtos/brand.dto";
 import type { CategoryDTO } from "@/cases/categories/dtos/category.dto";
 
+export interface BrandDTO {
+  id?: string;
+  name: string;
+  country?: string;
+}
 export interface ProductDTO {
   id?: string;
   name: string;
