@@ -11,9 +11,11 @@ export function ProductCard({ product }: ProductCardProps) {
     <Card>
       <CardHeader />
       <CardContent>
-        <h4>{product.name}</h4>
+        <h4 className="text-sm font-semibold mb-4 min-h-40px">
+          {product.name}
+        </h4>
         <div className="w-full flex flex-col">
-          <p>
+          <p className="text-sm font-light line-through mb-1">
             <IntlProvider locale="pt-BR">
               <FormattedNumber
                 value={product.price * 1.15}
@@ -22,14 +24,15 @@ export function ProductCard({ product }: ProductCardProps) {
               />
             </IntlProvider>
           </p>
-          <p>
+          
+          <p className="text-xs font-light mb-4">
             <IntlProvider locale="pt-BR">
               <FormattedNumber
                 value={product.price}
                 style="currency"
                 currency="BRL"
               />
-              em 10x de
+              {" "}em 10x de{" "}
               <FormattedNumber
                 value={product.price / 10}
                 style="currency"
@@ -37,16 +40,23 @@ export function ProductCard({ product }: ProductCardProps) {
               />
             </IntlProvider>
           </p>
-          Ou
-          <p>
-            <IntlProvider locale="pt-BR">
-              <FormattedNumber
-                value={product.price * 0.9}
-                style="currency"
-                currency="BRL"
-              />
-            </IntlProvider>
-            no Pix
+
+          <div className="flex items-center gap-1">
+            <span className="text-xs font-light">ou</span>
+            <span className="text-2xl font-semibold">
+              <IntlProvider locale="pt-BR">
+                <FormattedNumber
+                  value={product.price * 0.9}
+                  style="currency"
+                  currency="BRL"
+                />
+              </IntlProvider>
+            </span>
+            <span className="text-xs font-light">no Pix</span>
+          </div>
+
+          <p className="text-xs font-light text-green-600 w-full flex justify-center mt-1">
+            10% de desconto no Pix
           </p>
         </div>
       </CardContent>
