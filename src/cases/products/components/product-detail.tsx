@@ -3,6 +3,7 @@ import type { ProductDTO } from "../dtos/product.dto";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
+import { useCart } from "@/cases/cart/hooks/useCart";
 
 type ProductDetailProps = {
   product: ProductDTO;
@@ -12,6 +13,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const bucketBaseUrl = import.meta.env.VITE_BUCKET_BASE_URL;
   const cleanBase = bucketBaseUrl?.replace(/\/$/, "") || "";
 
+  const { addProduct } = useCart();
+
   const photos = product.photos || [];
   const [selectedPhoto, setSelectedPhoto] = useState(0);
 
@@ -19,6 +22,10 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const mainImage = mainKey
     ? `${cleanBase}/${mainKey}`
     : "https://placehold.co/600x600?text=Sem+Imagem";
+
+  function handleAddProductCart() {
+    addProduct(product);
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-14 mt-12">
@@ -87,7 +94,9 @@ export function ProductDetail({ product }: ProductDetailProps) {
             {(Number(product.price) / 10).toFixed(2)} sem juros
           </p>
         </div>
-        <Button className="mt-8 w-full bg-green-600 hover:bg-green-700 h-14 text-lg flex items-center gap-2">
+        <Button
+          onClick={handleAddProductCart}
+          className="mt-8 w-full bg-green-600 hover:bg-green-700 h-14 text-lg flex items-center gap-2">
           <ShoppingCart size={22} />
           Adicionar ao Carrinho
         </Button>

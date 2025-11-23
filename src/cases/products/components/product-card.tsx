@@ -25,8 +25,8 @@ export function ProductCard({ product }: ProductCardProps) {
     setImagePath(fullURL);
   }, [product, bucketBaseUrl]);
 
-  console.log("PHOTO PATH:", product?.photos?.[0]?.name);
-  console.log("FINAL URL:", imagePath);
+  //console.log("PHOTO PATH:", product?.photos?.[0]?.name);
+  //console.log("FINAL URL:", imagePath);
 
   return (
     <Card className="w-3xs flex justify-center">
