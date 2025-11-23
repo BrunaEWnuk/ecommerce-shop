@@ -5,12 +5,18 @@ export interface BrandDTO {
   name: string;
   country?: string;
 }
+export interface ProductPhotoDTO {
+  id?: string;
+ name: string;
+}
+
 export interface ProductDTO {
   id?: string;
   name: string;
   description?: string;
-  price?: number;
+  price: number;
   active: boolean;
   category: CategoryDTO;
   brand?: BrandDTO;
+  photos?: ProductPhotoDTO[];
 }
