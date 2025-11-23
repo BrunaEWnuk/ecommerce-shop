@@ -1,23 +1,54 @@
 import { useCart } from "@/cases/cart/hooks/useCart";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, LogOut, User } from "lucide-react"; 
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/cases/costumers/contexts/AuthContext";
 
 export function Header() {
   const { cart } = useCart();
+  const { user, signOut } = useAuth();
 
   return (
-    <header className="w-full border-b bg-white">
+    <header className="w-full border-b bg-white sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-4 gap-4">
-        <div className="flex items-center gap-2">
+        
+        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <ShoppingCart className="text-green-600" />
           <h1 className="text-lg font-bold">
             <span className="font-light">Mater</span>SHOP
           </h1>
-        </div>
-        <div className="flex items-center gap-1">
+        </Link>
+
+        <div className="flex items-center gap-4">
+          
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-zinc-500 hidden md:block">
+                Olá, {user.email?.split("@")[0]}
+              </span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={signOut}
+                className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              >
+                <LogOut size={16} className="mr-2" />
+                Sair
+              </Button>
+            </div>
+          ) : (
+            <Link to="/login">
+              <Button variant="outline" size="sm" className="gap-2">
+                <User size={16} />
+                Entrar
+              </Button>
+            </Link>
+          )}
+
+          <div className="h-6 w-px bg-zinc-200 mx-1" />
+
           <Link to="/cart" className="relative">
             <Button
               variant="ghost"

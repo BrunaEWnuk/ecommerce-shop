@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-refresh/only-export-components */
 import type { ProductDTO } from "@/cases/products/dtos/product.dto";
 import { createContext, useEffect, useState, type ReactNode } from "react";
@@ -16,12 +15,14 @@ type CartContextType = {
     cart: Cart;
     addProduct: (product: ProductDTO, quantity?: number) => void;
     removeProductCart: (productId: string) => void;
+    clearCart: () => void;
 }
 
 export const CartContext = createContext<CartContextType>({
-  cart: { items: [] },
-  addProduct: () => {},
-  removeProductCart: () => {},
+    cart: { items: [] },
+    addProduct: () => {},
+    removeProductCart: () => {},
+    clearCart: () => {},
 });
 
 export type CartContextProviderProps = {
@@ -29,23 +30,22 @@ export type CartContextProviderProps = {
 }
 
 export function CartContextProvider({ children }: CartContextProviderProps) {
-  const [cart, setCart] = useState<Cart>({ items: [] });
+    const [cart, setCart] = useState<Cart>(() => {
+        const storageCart = localStorage.getItem("cart");
+        if (storageCart) {
+            try {
+                return JSON.parse(storageCart);
+            } catch {
+                return { items: [] };
+            }
+        }
+        return { items: [] };
+    });
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    useEffect(() => {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }, [cart]);
 
-  useEffect(() => {
-    const storageCart = localStorage.getItem("cart");
-
-    if (storageCart) {
-      try {
-        setCart(JSON.parse(storageCart));
-      } catch {
-        setCart({ items: [] });
-      }
-    }
-  }, []);
     function addProduct(product: ProductDTO, quantity: number = 1) {
         setCart((prevCart: Cart) => {
             const existingItem = prevCart.items.find((item) => item.product.id === product.id);
@@ -59,23 +59,26 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
                         : item
                 );
             } else {
-                updatedItems = [...prevCart.items, { product, quantity }]
+                updatedItems = [...prevCart.items, { product, quantity }];
             }
 
-            return { items: updatedItems }
-        })
-}
-function removeProductCart(productId: string) {
-    setCart((prevCart) => (
-        {
-            items: prevCart.items.filter((item) => item.product.id !== productId)
-        }
-    ))
-}
+            return { items: updatedItems };
+        });
+    }
 
-return (
-    <CartContext.Provider value={{ cart, addProduct, removeProductCart }}>
-        {children}
-    </CartContext.Provider>
-)
+    function removeProductCart(productId: string) {
+        setCart((prevCart) => ({
+            items: prevCart.items.filter((item) => item.product.id !== productId)
+        }));
+    }
+
+    function clearCart() {
+        setCart({ items: [] });
+    }
+
+    return (
+        <CartContext.Provider value={{ cart, addProduct, removeProductCart, clearCart }}>
+            {children}
+        </CartContext.Provider>
+    );
 }
