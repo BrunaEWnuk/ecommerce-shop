@@ -1,5 +1,5 @@
 import { useCart } from "@/cases/cart/hooks/useCart";
-import { ShoppingCart, LogOut, User } from "lucide-react"; 
+import { ShoppingCart, LogOut, User, ListOrdered } from "lucide-react"; 
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "../ui/badge";
@@ -14,6 +14,7 @@ export function Header() {
     <header className="w-full border-b bg-white sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-4 gap-4">
         
+        {/* LOGO */}
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <ShoppingCart className="text-green-600" />
           <h1 className="text-lg font-bold">
@@ -23,6 +24,21 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           
+          {user && (
+            <Link to="/orderHistory">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="gap-2 text-blue-600 border-blue-500 hover:bg-blue-50"
+              >
+                <ListOrdered size={16} />
+                Meus Pedidos
+              </Button>
+            </Link>
+          )}
+
+          {user && <div className="h-6 w-px bg-zinc-200 mx-1" />}
+
           {user ? (
             <div className="flex items-center gap-2">
               <span className="text-sm text-zinc-500 hidden md:block">
@@ -57,6 +73,7 @@ export function Header() {
             >
               <ShoppingCart />
             </Button>
+
             {cart.items.length > 0 && (
               <Badge
                 className={cn(
@@ -67,6 +84,7 @@ export function Header() {
               </Badge>
             )}
           </Link>
+
         </div>
       </div>
     </header>

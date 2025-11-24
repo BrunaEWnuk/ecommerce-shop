@@ -1,7 +1,7 @@
 import type { CategoryDTO } from "@/cases/categories/dtos/category.dto";
 
 export interface BrandDTO {
-  id?: string;
+  id: string;
   name: string;
   country?: string;
 }
@@ -11,7 +11,7 @@ export interface ProductPhotoDTO {
 }
 
 export interface ProductDTO {
-  id?: string;
+  id: string;
   name: string;
   description?: string;
   price: number;
