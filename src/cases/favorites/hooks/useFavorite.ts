@@ -1,60 +1,63 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/client";
+import { useEffect, useState, useCallback } from "react";
+import { getFavorites, toggleFavorite } from "../services/favorite.service";
 
-export function useFavorite(productId?: string) {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [isFavorite, setIsFavorite] = useState(false);
+export function useFavorites(userId?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  async function loadUser() {
-    const { data } = await supabase.auth.getUser();
-    setUserId(data.user?.id ?? null);
-  }
+  const loadFavorites = useCallback(async () => {
+    if (!userId) return;
+    setLoading(true);
 
-  const loadFavorite = useCallback(async () => {
-    if (!userId || !productId) return;
+    const { data } = await getFavorites(userId);
+    setFavorites(data || []);
 
-    const { data } = await supabase
-      .from("favorite")
-      .select("*")
-      .eq("customerid", userId)
-      .eq("productid", productId)
-      .maybeSingle();
+    setLoading(false);
+  }, [userId]);
 
-    setIsFavorite(!!data);
-  }, [userId, productId]);
+  const handleToggle = useCallback(
+    async (productId: string) => {
+      if (!userId) return;
 
-  async function toggleFavorite() {
-    if (!userId || !productId) return;
+      const { isFavorite } = await toggleFavorite(userId, productId);
 
-    if (isFavorite) {
-      await supabase
-        .from("favorite")
-        .delete()
-        .eq("customerid", userId)
-        .eq("productid", productId);
-
-      setIsFavorite(false);
-    } else {
-      const { error } = await supabase.from("favorite").insert({
-        customerid: userId,
-        productid: productId,
-        createdat: new Date().toISOString(),
-      });
-
-      if (!error) {
-        setIsFavorite(true);
-      }
-    }
-  }
+      setFavorites((prev) =>
+        isFavorite
+          ? [...prev, { user_id: userId, product_id: productId }]
+          : prev.filter((f) => f.product_id !== productId)
+      );
+    },
+    [userId]
+  );
 
   useEffect(() => {
-    loadUser();
+    loadFavorites();
+  }, [loadFavorites]);
+
+  return {
+    favorites,
+    loading,
+    reload: loadFavorites,
+    toggle: handleToggle,
+    isFavorite: (productId: string) =>
+      favorites.some((f) => f.product_id === productId),
+  };
+}
+export function useFavorite(productId: string) {
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const toggleFavoriteStatus = useCallback(async () => {
+    setIsFavorite((prev) => !prev);
   }, []);
 
   useEffect(() => {
-    loadFavorite();
-  }, [loadFavorite]);
+    setIsFavorite(false);
+  }, [productId]);
 
-  return { isFavorite, toggleFavorite };
-}
+  return {
+    isFavorite,
+    toggleFavorite: toggleFavoriteStatus,
+  };
+}     

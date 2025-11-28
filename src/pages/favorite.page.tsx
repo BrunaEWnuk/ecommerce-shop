@@ -1,33 +1,34 @@
 import { ProductCard } from "@/cases/products/components/product-card";
-import { listFavorites } from "@/cases/favorites/services/favorite.service";
-import { useAuth } from "../cases/costumers/hooks/useAuth";
+import { useAuth } from "@/cases/costumers/hooks/useAuth";
+import { useFavorites } from "@/cases/favorites/hooks/useFavorite";
 import { useEffect, useState } from "react";
 import { ProductService } from "@/cases/products/services/product.service";
 import type { ProductDTO } from "@/cases/products/dtos/product.dto";
 
 export function FavoritesPage() {
   const { user } = useAuth();
+  const userId = user?.id;
+
+  const { favorites, loading } = useFavorites(userId);
+
   const [products, setProducts] = useState<ProductDTO[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
-      if (!user?.id) return;
-
-      const favoriteIds = await listFavorites(user.id); 
-
-      const result: ProductDTO[] = [];
-      for (const id of favoriteIds) {
-        const p = await ProductService.getById(id);
-        result.push(p);
+      if (!favorites.length) {
+        setProducts([]);
+        return;
       }
 
+      const result = await Promise.all(
+        favorites.map(async (f) => await ProductService.getById(f.product_id))
+      );
+
       setProducts(result);
-      setLoading(false);
     }
 
     load();
-  }, [user]);
+  }, [favorites]);
 
   if (loading) return <p className="p-4">Carregando favoritos...</p>;
 
