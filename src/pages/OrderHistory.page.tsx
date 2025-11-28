@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Clock, Package, CheckCircle } from "lucide-react";
 import { useOrder } from "@/cases/orders/hooks/useOrder";
-import ProductRating from "@/cases/products/components/ProductRating";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -94,10 +93,6 @@ function OrderCard({ order }: any) {
           {order.OrderItem?.map((item: any, index: number) => (
             <li key={index}>
               {item.quantity}x — R${item.value.toFixed(2)}
-
-              <div className="mt-1">
-                <ProductRating productId={item.productId} />
-              </div>
             </li>
           ))}
         </ul>

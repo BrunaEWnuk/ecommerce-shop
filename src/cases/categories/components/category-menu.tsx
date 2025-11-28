@@ -20,7 +20,6 @@ export function CategoryMenu() {
   const [visibleItems, setVisibleItems] = useState<CategoryDTO[]>([]);
   const [hiddenItems, setHiddenItems] = useState<CategoryDTO[]>([]);
 
-  // Recupera o ID ativo da URL
   const activeCategoryId = searchParams.get("categoryId");
 
   useEffect(() => {
@@ -30,7 +29,6 @@ export function CategoryMenu() {
     }
   }, [categories]);
 
-  // Função que manipula a URL
   function handleSelect(categoryId?: string) {
     const newParams = new URLSearchParams(searchParams);
 

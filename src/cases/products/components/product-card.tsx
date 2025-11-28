@@ -1,10 +1,8 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { ProductDTO } from "../dtos/product.dto";
 import { FormattedNumber, IntlProvider } from "react-intl";
-import { Search } from "lucide-react";
 
 import { FavoriteButton } from "@/cases/favorites/components/favorite-button";
-import { ReviewButton } from "@/cases/Reviews/Components/review-button";
 
 type ProductCardProps = {
   product: ProductDTO;
@@ -13,7 +11,6 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   const bucketBaseUrl = import.meta.env.VITE_BUCKET_BASE_URL;
 
-  // ✅ CALCULA A IMAGEM SEM setState / useEffect
   const photo = product?.photos?.[0]?.name;
   const cleanBase = bucketBaseUrl?.replace(/\/$/, "");
   const cleanPath = photo?.replace(/^\//, "");
@@ -29,29 +26,13 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card className="relative w-3xs flex justify-center">
-      {/* AÇÕES NO TOPO */}
       <div className="absolute top-2 right-2 flex gap-2 z-20">
-        {/* ❤️ FAVORITE */}
-        <FavoriteButton productId={product.id} />
-
-        {/* ⭐ REVIEW */}
-        <ReviewButton productId={product.id} />
-
-        {/* 🔍 DETALHES */}
-        <button
-          onClick={openDetails}
-          className="p-1 rounded-full bg-white shadow hover:bg-gray-100 transition"
-        >
-          <Search className="w-5 h-5 text-blue-500" />
-        </button>
       </div>
 
-      {/* IMAGEM */}
       <CardHeader className="py-0 h-[210px] flex items-center justify-center">
         <img className="cover max-h-full object-contain" src={imagePath} />
       </CardHeader>
 
-      {/* CONTEÚDO */}
       <CardContent>
         <h4 className="text-sm font-semibold mb-4 min-h-10">{product.name}</h4>
 

@@ -10,7 +10,6 @@ import { SignUpPage } from "./pages/SignUp.page";
 import { CheckoutPage } from "./pages/CheckoutPage";
 import { OrderHistoryPage } from "./pages/OrderHistory.page";
 import FavoritesPage from "./pages/favorite.page";
-import ProductSearchPage from "./pages/ProductSearchPage";
 
 
 function App() {
@@ -30,7 +29,6 @@ function App() {
 
               <Route path="/orderHistory" element={<OrderHistoryPage />} />
               <Route path="/favoritos" element={<FavoritesPage />} />
-              <Route path="/buscar" element={<ProductSearchPage />} />
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/checkout" element={<CheckoutPage />} />

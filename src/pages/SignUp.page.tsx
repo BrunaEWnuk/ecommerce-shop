@@ -26,10 +26,8 @@ export function SignUpPage() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    // Carrega as cidades ao abrir a página
     useEffect(() => {
         async function loadCities() {
-            // Busca na tabela 'city' (minúsculo, padrão do Supabase)
             const { data, error } = await supabase
                 .from('city') 
                 .select('id, name')
@@ -76,7 +74,7 @@ export function SignUpPage() {
         }
 
         const { error: authError } = await signUp(
-            cleanEmail, // Enviamos a versão sanitizada
+            cleanEmail, 
             cleanPassword, 
             {
                 name: formData.name,

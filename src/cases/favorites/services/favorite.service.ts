@@ -1,59 +1,53 @@
 import { supabase } from "@/lib/client";
 
-export async function getFavorites(userId: string) {
+export async function getFavorites(customerId: string) {
   return await supabase
     .from("favorite")
     .select("*")
-    .eq("user_id", userId);
+    .eq("customerId", customerId);
 }
 
 export async function addFavorite(customerId: string, productId: string) {
   return await supabase
     .from("favorite")
-    .insert({ customer_id: customerId, product_id: productId })
+    .insert({
+      customerId: customerId,
+      productId: productId
+    })
     .select()
     .single();
 }
 
-export async function removeFavorite(userId: string, productId: string) {
+export async function removeFavorite(customerId: string, productId: string) {
   return await supabase
     .from("favorite")
     .delete()
-    .eq("user_id", userId)
-    .eq("product_id", productId);
+    .eq("customerId", customerId)
+    .eq("productId", productId);
 }
 
-export async function toggleFavorite(userId: string, productId: string) {
-  const { data: auth } = await supabase.auth.getUser();
-  console.log("AUTH UID:", auth?.user?.id);
-  console.log("USER_ID enviado:", userId);
-  const { data: existing, error } = await supabase
+export async function toggleFavorite(customerId: string, productId: string) {
+  const { data: existing } = await supabase
     .from("favorite")
     .select("*")
-    .eq("user_id", userId)
-    .eq("product_id", productId)
+    .eq("customerId", customerId)
+    .eq("productId", productId)
     .maybeSingle();
 
-  if (error) console.error("Erro ao verificar favorito:", error);
-
   if (existing) {
-    await removeFavorite(userId, productId);
+    await removeFavorite(customerId, productId);
     return { isFavorite: false };
   }
 
-  await addFavorite(userId, productId);
+  await addFavorite(customerId, productId);
   return { isFavorite: true };
 }
-export async function listFavorite(userId: string) {
-  const { data, error } = await supabase
+
+export async function listFavorite(customerId: string) {
+  const { data } = await supabase
     .from("favorite")
-    .select("product_id")
-    .eq("user_id", userId);
+    .select("productId")
+    .eq("customerId", customerId);
 
-  if (error) {
-    console.error("Erro ao listar favoritos:", error);
-    return [];
-  }
-
-  return data.map((item) => item.product_id);
-} 
+  return data?.map((item) => item.productId) ?? [];
+}
